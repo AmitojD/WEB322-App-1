@@ -72,12 +72,4 @@ function getCategories() {
     })
 }
 
-// initialize().then(() => {
-//     posts.forEach((post) => {
-//         if (post.published === true) {
-//             console.log(post);
-//         }
-//     })
-// });
-
-module.exports = { initialize };
+module.exports = { initialize, getAllPosts, getPublishedPosts, getCategories };
