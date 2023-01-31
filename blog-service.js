@@ -29,21 +29,55 @@ function initialize() {
                 categories = JSON.parse(data);
 
                 // Communicates back to server stating that the operation was a success
-                resolve({posts, categories});
+                resolve();
               });
           });
     })
 }
 
-// // => Provides full array of "posts" objects 
-// function getAllPosts() {
-//     initialize().then((returnedData) => {
-//         if (returnedData.posts.length == 0) {
-//             reject("No Results Returned");
-//         } else {
-//             resolve(returnedData.posts);
+// => Provides full array of "posts" objects 
+function getAllPosts() {
+    return new Promise((resolve, reject) => {
+        if (posts.length === 0) {
+            reject("No results returned");
+        } else {
+            resolve(posts);
+        }
+    })
+}
+
+// => Provides an array of "post" objects whose published property is true 
+function getPublishedPosts() {
+    let publishedPosts = [];
+    if (posts.length === 0) {
+        reject("No results returned");
+    } else {
+        posts.forEach((post) => {
+            if (post.published === true) {
+                publishedPosts.push(post);
+            }
+        })
+        resolve(publishedPosts);
+    }
+}
+
+// => Provides full array of "category" objects 
+function getCategories() {
+    return new Promise((resolve, reject) => {
+        if (categories.length === 0) {
+            reject("No results returned");
+        } else {
+            resolve(categories);
+        }
+    })
+}
+
+// initialize().then(() => {
+//     posts.forEach((post) => {
+//         if (post.published === true) {
+//             console.log(post);
 //         }
 //     })
-// }
+// });
 
 module.exports = { initialize };
