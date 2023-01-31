@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { resolve } = require('path');
 const path = require("path");
 
 // Globally declared arrays
@@ -49,15 +50,16 @@ function getAllPosts() {
 // => Provides an array of "post" objects whose published property is true 
 function getPublishedPosts() {
     let publishedPosts = [];
-    if (posts.length === 0) {
-        reject("No results returned");
-    } else {
-        posts.forEach((post) => {
-            if (post.published === true) {
-                publishedPosts.push(post);
-            }
-        })
+    posts.forEach((post) => {
+        if (post.published === true) {
+            publishedPosts.push(post);
+        }
+    })
+
+    if (publishedPosts.length > 0) {
         resolve(publishedPosts);
+    } else {
+        reject("No results returned");
     }
 }
 
