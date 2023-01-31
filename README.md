@@ -1,1 +1,1 @@
-# web322-app
+# WEB322 Blog Web Application
