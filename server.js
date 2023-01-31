@@ -44,6 +44,11 @@ app.get("/categories", (req, res) => {
   res.send("Categories");
 })
 
+// ========== HANDLE 404 REQUESTS ==========
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, "views", "notFoundPage.html"));
+})
+
 // ========== Setup http server to listen on HTTP_PORT ==========
 app.listen(HTTP_PORT, () => {
     console.log("Express http server listening on: " + HTTP_PORT);
