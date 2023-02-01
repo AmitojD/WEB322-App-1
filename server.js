@@ -44,7 +44,6 @@ app.get("/blog", (req, res) => {
 app.get("/posts", (req, res) => {
   getAllPosts()
     .then((data) => {
-    console.log(typeof data)
       res.send(data)
     })
     // Error Handling
