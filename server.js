@@ -30,25 +30,26 @@ app.get("/about", (req, res) => {
 
 // ========== Blog Page Route ==========
 app.get("/blog", (req, res) => {
-  // getPublishedPosts()
-  // .then((data) => {
-  //   res.send(data)
-  // })
+  getPublishedPosts()
+  .then((data) => {
+    res.send(data)
+  })
   // Error Handling
-  // .catch((err) => {
-  //   console.log(err);
-  // })
+  .catch((err) => {
+    res.send(err);
+  })
 });
 
 // ========== Posts Page Route ==========
 app.get("/posts", (req, res) => {
   getAllPosts()
     .then((data) => {
+    console.log(typeof data)
       res.send(data)
     })
     // Error Handling
     .catch((err) => {
-      console.log(err);
+      res.send(err);
     })
 });
 
@@ -60,7 +61,7 @@ app.get("/categories", (req, res) => {
   })
   // Error Handling
   .catch((err) => {
-    console.log(err);
+    res.send(err);
   })
 })
 

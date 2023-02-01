@@ -49,18 +49,20 @@ function getAllPosts() {
 
 // => Provides an array of "post" objects whose published property is true 
 function getPublishedPosts() {
-    let publishedPosts = [];
-    posts.forEach((post) => {
-        if (post.published === true) {
-            publishedPosts.push(post);
-        }
-    })
+    return new Promise((resolve, reject) => {
+        let publishedPosts = [];
+        posts.forEach((post) => {
+            if (post.published === true) {
+                publishedPosts.push(post);
+            }
+        })
 
-    if (publishedPosts.length > 0) {
-        resolve(publishedPosts);
-    } else {
-        reject("No results returned");
-    }
+        if (publishedPosts.length > 0) {
+            resolve(publishedPosts);
+        } else {
+            reject("No results returned");
+        }
+    })    
 }
 
 // => Provides full array of "category" objects 
