@@ -7,8 +7,7 @@
 *
 *  Online (Cyclic) Link: 
 *
-********************************************************************************/ 
-
+********************************************************************************/
 
 const express = require("express");
 const path = require("path");
@@ -31,23 +30,38 @@ app.get("/about", (req, res) => {
 
 // ========== Blog Page Route ==========
 app.get("/blog", (req, res) => {
-  // getPublishedPosts().then((data) => {
-  //   res.send(data);
+  // getPublishedPosts()
+  // .then((data) => {
+  //   res.send(data)
+  // })
+  // Error Handling
+  // .catch((err) => {
+  //   console.log(err);
   // })
 });
 
 // ========== Posts Page Route ==========
 app.get("/posts", (req, res) => {
-  getAllPosts().then((data) => {
-    res.send(data);
-  })
+  getAllPosts()
+    .then((data) => {
+      res.send(data)
+    })
+    // Error Handling
+    .catch((err) => {
+      console.log(err);
+    })
 });
 
 // ========== Categories Page Route ==========
 app.get("/categories", (req, res) => {
-  getCategories().then((data) => {
-    res.send(data);
-  });
+  getCategories()
+  .then((data) => {
+    res.send(data)
+  })
+  // Error Handling
+  .catch((err) => {
+    console.log(err);
+  })
 })
 
 // ========== HANDLE 404 REQUESTS ==========
