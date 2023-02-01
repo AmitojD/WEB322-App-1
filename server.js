@@ -8,10 +8,6 @@
 *  Online (Cyclic) Link: https://zany-ox-sweatshirt.cyclic.app/about
 *
 ********************************************************************************/
-// Doubts: 
-// 1. Does error message have to be a seperate page or is res.send okay
-// 2. Confirm if everything works okay 
-
 const express = require("express");
 const path = require("path");
 const { initialize, getAllPosts, getPublishedPosts, getCategories } = require("./blog-service.js");
