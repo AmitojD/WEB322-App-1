@@ -76,7 +76,23 @@ function getCategories() {
     })
 }
 
-// Adds a new post
+// => Finds a post using its ID
+function getPostById(id) {
+    return new Promise((resolve, reject) => {
+        const filteredPosts = posts.filter(post => post.id == id);
+        const uniquePost = filteredPosts[0];
+
+        if (uniquePost) {
+            resolve(uniquePost);
+        }
+        else {
+            reject("no result returned");
+        }
+    })
+    
+}
+
+// => Adds a new post
 function addPost(postData) {
     return new Promise((resolve, reject) => {
         if (postData.published === undefined) {
@@ -95,4 +111,4 @@ function addPost(postData) {
     
 }
 
-module.exports = { initialize, getAllPosts, getPublishedPosts, getCategories, addPost };
+module.exports = { initialize, getAllPosts, getPublishedPosts, getCategories, addPost, getPostById };
