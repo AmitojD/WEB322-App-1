@@ -76,4 +76,23 @@ function getCategories() {
     })
 }
 
-module.exports = { initialize, getAllPosts, getPublishedPosts, getCategories };
+// Adds a new post
+function addPost(postData) {
+    return new Promise((resolve, reject) => {
+        if (postData.published === undefined) {
+            postData.published = false;
+        } else {
+            postData.published = true;
+        }
+    
+        // Setting the next post id
+        postData.id = posts.length + 1;
+    
+        // Adding to posts
+        posts.push(postData);
+        resolve(postData);
+    })
+    
+}
+
+module.exports = { initialize, getAllPosts, getPublishedPosts, getCategories, addPost };
