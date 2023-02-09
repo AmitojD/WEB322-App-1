@@ -94,18 +94,27 @@ function getPostById(id) {
 // => Find posts by category
 function getPostsByCategory(category) {
     return new Promise((resolve, reject) => {
-        const filteredposts = posts.filter(post => post.category == category);
+        const filteredPosts = posts.filter(post => post.category == category);
 
-        if (filteredposts.length > 0) {
-            resolve(filteredposts);
+        if (filteredPosts.length > 0) {
+            resolve(filteredPosts);
         } else {
             reject("no results returned");
         }
     })
 }
 
+// => Find posts that have a date greater than the specified minimum date
 function getPostsByMinDate(minDate) {
-    
+    return new Promise((resolve, reject) => {
+        const filteredPosts = posts.filter(post => new Date(post.postDate) >= new Date(minDate));
+
+        if (filteredPosts.length > 0) {
+            resolve(filteredPosts);
+        } else {
+            reject("no results returned");
+        }
+    })
 }
 
 // => Adds a new post

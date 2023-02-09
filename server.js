@@ -3,7 +3,7 @@
  *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source
  *  (including 3rd party web sites) or distributed to other students.
  *
- *  Name: Aryan Khurana Student ID: 145282216 Date: 08 February 2023
+ *  Name: Aryan Khurana Student ID: 145282216 Date: 09 February 2023
  *
  *  Online (Cyclic) Link: https://zany-ox-sweatshirt.cyclic.app/about
  *
@@ -20,7 +20,8 @@ const {
   getCategories,
   addPost,
   getPostById,
-  getPostsByCategory
+  getPostsByCategory,
+  getPostsByMinDate
 } = require("./blog-service.js");
 
 const app = express();
@@ -66,6 +67,7 @@ app.get("/blog", (req, res) => {
 
 // ========== Posts Page Route ==========
 app.get("/posts", (req, res) => {
+  // Checking if a category was provided
   if (req.query.category) {
     getPostsByCategory(req.query.category)
     .then((data) => {
@@ -77,8 +79,9 @@ app.get("/posts", (req, res) => {
     });
   }
 
+  // Checking if a minimum date is provided
   else if (req.query.minDate) {
-    getAllPosts()
+    getPostsByMinDate(req.query.minDate)
     .then((data) => {
       res.send(data);
     })
@@ -88,6 +91,7 @@ app.get("/posts", (req, res) => {
     });
   }
 
+  // Checking whether no specification queries were provided
   else {
     getAllPosts()
     .then((data) => {
@@ -107,6 +111,7 @@ app.get("/posts/add", (req, res) => {
 
 // ========== Add Post Page Route (POST) ==========
 app.post("/posts/add", upload.single("featureImage"), (req, res) => {
+  // Configuring cloudinary image uploading
   let streamUpload = (req) => {
     return new Promise((resolve, reject) => {
       let stream = cloudinary.uploader.upload_stream((error, result) => {
@@ -123,11 +128,13 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
 
   async function upload(req) {
     let result = await streamUpload(req);
-    console.log(result);
+    // console.log(result);
     return result;
   }
 
-  upload(req).then((uploaded) => {
+  // Once the upload is completed, we store the other form data in the object
+  upload(req)
+  .then((uploaded) => {
     req.body.featureImage = uploaded.url;
     let postObject = {};
 
@@ -142,6 +149,10 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
     // Adding the post
     addPost(postObject);
     res.redirect("/posts");
+  })
+  // Error Handling
+  .catch((err) => {
+    res.send(err);
   });
 });
 
