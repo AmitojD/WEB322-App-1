@@ -128,7 +128,6 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
 
   async function upload(req) {
     let result = await streamUpload(req);
-    // console.log(result);
     return result;
   }
 
@@ -146,8 +145,11 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
     postObject.featureImage = req.body.featureImage;
     postObject.published = req.body.published;
     
-    // Adding the post
-    addPost(postObject);
+    // Adding the post if everything is okay
+    // Only add the post if the entries make sense
+    if (postObject.body &&  postObject.title && postObject.date && postObject.category && postObject.featureImage) {
+      addPost(postObject);
+    }
     res.redirect("/posts");
   })
   // Error Handling
