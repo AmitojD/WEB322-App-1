@@ -147,7 +147,7 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
     
     // Adding the post if everything is okay
     // Only add the post if the entries make sense
-    if (postObject.body &&  postObject.title && postObject.date && postObject.category && postObject.featureImage) {
+    if (postObject.title) {
       addPost(postObject);
     }
     res.redirect("/posts");
