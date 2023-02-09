@@ -19,7 +19,8 @@ const {
   getPublishedPosts,
   getCategories,
   addPost,
-  getPostById
+  getPostById,
+  getPostsByCategory
 } = require("./blog-service.js");
 
 const app = express();
@@ -65,25 +66,38 @@ app.get("/blog", (req, res) => {
 
 // ========== Posts Page Route ==========
 app.get("/posts", (req, res) => {
-  getAllPosts()
+  if (req.query.category) {
+    getPostsByCategory(req.query.category)
     .then((data) => {
-      let responseData;
-      if (req.query.category) {
-        res.send(req.query.category);
-      }
-
-      if (req.query.minDate) {
-        res.send(req.query.minDate);
-      }
-      
-      else {
-        res.send(data);
-      }
+      res.send(data);
     })
     // Error Handling
     .catch((err) => {
       res.send(err);
     });
+  }
+
+  else if (req.query.minDate) {
+    getAllPosts()
+    .then((data) => {
+      res.send(data);
+    })
+    // Error Handling
+    .catch((err) => {
+      res.send(err);
+    });
+  }
+
+  else {
+    getAllPosts()
+    .then((data) => {
+      res.send(data);
+    })
+    // Error Handling
+    .catch((err) => {
+      res.send(err);
+    });
+  }
 });
 
 // ========== Add Post Page Route (GET) ==========

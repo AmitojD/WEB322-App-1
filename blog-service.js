@@ -89,6 +89,22 @@ function getPostById(id) {
             reject("no result returned");
         }
     })
+}
+
+// => Find posts by category
+function getPostsByCategory(category) {
+    return new Promise((resolve, reject) => {
+        const filteredposts = posts.filter(post => post.category == category);
+
+        if (filteredposts.length > 0) {
+            resolve(filteredposts);
+        } else {
+            reject("no results returned");
+        }
+    })
+}
+
+function getPostsByMinDate(minDate) {
     
 }
 
@@ -111,4 +127,13 @@ function addPost(postData) {
     
 }
 
-module.exports = { initialize, getAllPosts, getPublishedPosts, getCategories, addPost, getPostById };
+module.exports = { 
+    initialize, 
+    getAllPosts, 
+    getPublishedPosts, 
+    getCategories, 
+    addPost, 
+    getPostById,
+    getPostsByCategory,
+    getPostsByMinDate
+};
