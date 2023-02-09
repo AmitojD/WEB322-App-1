@@ -80,7 +80,7 @@ app.get("/posts/add", (req, res) => {
 })
 
 // ========== Add Post Page Route (POST) ==========
-app.get("/posts/add", upload.single("featureImage"), (req, res) => {
+app.post("/posts/add", upload.single("featureImage"), (req, res) => {
   let streamUpload = (req) => {
     return new Promise((resolve, reject) => {
       let stream = cloudinary.uploader.upload_stream((error, result) => {
