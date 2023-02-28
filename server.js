@@ -12,6 +12,7 @@ const express = require("express");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
+const exphbs = require("express-handlebars");
 const path = require("path");
 const {
   initialize,
@@ -28,6 +29,10 @@ const app = express();
 
 // Using the 'public' folder as our static folder
 app.use(express.static("public"));
+
+// Register handlebars as the rendering engine for views
+app.engine(".hbs", exphbs.engine({ extname: ".hbs" }));
+app.set("view engine", ".hbs");
 
 // Configuring Cloudinary
 cloudinary.config({
@@ -50,7 +55,7 @@ app.get("/", (req, res) => {
 
 // ========== About Page Route ==========
 app.get("/about", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "about.html"));
+  res.render("about");
 });
 
 // ========== Blog Page Route ==========
