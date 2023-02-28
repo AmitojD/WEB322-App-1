@@ -218,7 +218,7 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
       // Add it Blog Post before redirecting to /posts
       postObject.body = req.body.body;
       postObject.title = req.body.title;
-      postObject.postDate = Date.now();
+      postObject.postDate = new Date().toISOString().slice(0, 10);
       postObject.category = req.body.category;
       postObject.featureImage = req.body.featureImage;
       postObject.published = req.body.published;
