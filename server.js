@@ -30,8 +30,39 @@ const app = express();
 // Using the 'public' folder as our static folder
 app.use(express.static("public"));
 
+// This will add the property "activeRoute" to "app.locals" whenever the route changes
+app.use(function(req,res,next){
+  let route = req.path.substring(1);
+  app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/, "") : route.replace(/\/(.*)/, ""));
+  app.locals.viewingCategory = req.query.category;
+  next();
+});
+
 // Register handlebars as the rendering engine for views
-app.engine(".hbs", exphbs.engine({ extname: ".hbs" }));
+app.engine(".hbs", exphbs.engine({ 
+  extname: ".hbs",
+  // Handlebars custom helper to create active navigation links
+  // Usage: {{#navLink "/about"}}About{{/navLink}}
+  helpers: {
+    navLink: function(url, options) {
+      return '<li' +
+        ((url == app.locals.activeRoute) ? ' class="active" ' : '') +
+        '><a href="' + url + '">' + options.fn(this) + '</a></li>';
+    },
+    // Handlebars custom helper to check for equality
+    // Usage: {{#equal value1 value2}}...{{/equal}}
+    equal: function(lvalue, rvalue, options) {
+      if (arguments.length < 3)
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+      if (lvalue != rvalue) {
+        return options.inverse(this);
+      } else {
+        return options.fn(this);
+      }
+    }
+}
+
+}));
 app.set("view engine", ".hbs");
 
 // Configuring Cloudinary
@@ -76,11 +107,11 @@ app.get("/posts", (req, res) => {
   if (req.query.category) {
     getPostsByCategory(req.query.category)
     .then((data) => {
-      res.send(data);
+      res.render("posts", {posts: data})
     })
     // Error Handling
     .catch((err) => {
-      res.send(err);
+      res.render("posts", {message: "no results"});
     });
   }
 
@@ -88,11 +119,11 @@ app.get("/posts", (req, res) => {
   else if (req.query.minDate) {
     getPostsByMinDate(req.query.minDate)
     .then((data) => {
-      res.send(data);
+      res.render("posts", {posts: data})
     })
     // Error Handling
     .catch((err) => {
-      res.send(err);
+      res.render("posts", {message: "no results"});
     });
   }
 
@@ -100,18 +131,18 @@ app.get("/posts", (req, res) => {
   else {
     getAllPosts()
     .then((data) => {
-      res.send(data);
+      res.render("posts", {posts: data})
     })
     // Error Handling
     .catch((err) => {
-      res.send(err);
+      res.render("posts", {message: "no results"});
     });
   }
 });
 
 // ========== Add Post Page Route (GET) ==========
 app.get("/posts/add", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "addPost.html"));
+  res.render("addPost");
 })
 
 // ========== Add Post Page Route (POST) ==========
