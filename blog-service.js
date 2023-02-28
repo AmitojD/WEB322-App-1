@@ -65,6 +65,19 @@ function getPublishedPosts() {
     })    
 }
 
+// => Provides an array of "post" objects whose published property is true and finds posts by category
+function getPublishedPostsByCategory(category) {
+    return new Promise((resolve, reject) => {
+        const filteredPosts = posts.filter(post => post.category == category && post.published === true);
+
+        if (filteredPosts.length > 0) {
+            resolve(filteredPosts);
+        } else {
+            reject("no results returned");
+        }
+    })
+}
+
 // => Provides full array of "category" objects 
 function getCategories() {
     return new Promise((resolve, reject) => {
@@ -144,5 +157,6 @@ module.exports = {
     addPost, 
     getPostById,
     getPostsByCategory,
-    getPostsByMinDate
+    getPostsByMinDate,
+    getPublishedPostsByCategory
 };
