@@ -210,11 +210,11 @@ app.get("/post/:value", (req, res) => {
 app.get("/categories", (req, res) => {
   getCategories()
     .then((data) => {
-      res.send(data);
+      res.render("categories", {categories: data});
     })
     // Error Handling
     .catch((err) => {
-      res.send(err);
+      res.render("categories", {message: "no results"});
     });
 });
 
