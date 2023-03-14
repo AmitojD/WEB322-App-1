@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const { gte } = Sequelize.Op;
 
 // set up sequelize to point to our postgres database
 var sequelize = new Sequelize('tgxufbkt', 'tgxufbkt', 'Jcv_k8x_AoNEzn36l-r6Q24T7Oy1nIud', {
@@ -22,7 +23,7 @@ const Post = sequelize.define('Post', {
 
 // Defining the Category Model
 const Category = sequelize.define('Category', {
-    category: sequelize.STRING
+    category: Sequelize.STRING
 });
 
 // This will ensure that our Post model gets a "category" column that will act as a foreign key to the Category model
@@ -32,64 +33,149 @@ Post.belongsTo(Category, {foreignKey: 'category'});
 function initialize() {
     // Ensures that the categories file is read and assigned first before usage
     return new Promise((resolve, reject) => {
-        reject();
+        sequelize.sync().then(() => {
+            resolve();
+        })
+        .catch(() => {
+            reject("Unable to sync to the database.");
+        })
     });
 }
 
 // => Provides full array of "posts" objects 
 function getAllPosts() {
     return new Promise((resolve, reject) => {
-        reject();
+        Post.findAll().then((data) => {
+            resolve(data);
+        })
+        .catch(() => {
+            reject("No results returned");
+        })
     });
 }
 
 // => Provides an array of "post" objects whose published property is true 
 function getPublishedPosts() {
     return new Promise((resolve, reject) => {
-        reject();
-    });  
+        Post.findAll({
+            where: {
+                published: true
+            }
+        }).then((data) => {
+            resolve(data);
+        })
+        .catch(() => {
+            reject("No results returned");
+        })
+    });
 }
 
 // => Provides an array of "post" objects whose published property is true and finds posts by category
 function getPublishedPostsByCategory(category) {
     return new Promise((resolve, reject) => {
-        reject();
+        return new Promise((resolve, reject) => {
+            Post.findAll({
+                where: {
+                    category: category,
+                    published: true
+                }
+            }).then((data) => {
+                resolve(data);
+            })
+            .catch(() => {
+                reject("No results returned");
+            })
+        });
     });
 }
 
 // => Provides full array of "category" objects 
 function getCategories() {
     return new Promise((resolve, reject) => {
-        reject();
+        Category.findAll().then((data) => {
+            resolve(data);
+        })
+        .catch(() => {
+            reject("No results returned");
+        })
     });
 }
 
 // => Finds a post using its ID
 function getPostById(id) {
     return new Promise((resolve, reject) => {
-        reject();
+        Post.findAll({
+            where: {
+                id: id
+            }
+        }).then((data) => {
+            resolve(data[0]);
+        })
+        .catch(() => {
+            reject("No results returned");
+        })
     });
 }
 
 // => Find posts by category
 function getPostsByCategory(category) {
     return new Promise((resolve, reject) => {
-        reject();
+        Post.findAll({
+            where: {
+                category: category
+            }
+        }).then((data) => {
+            resolve(data);
+        })
+        .catch(() => {
+            reject("No results returned");
+        })
     });
 }
 
 // => Find posts that have a date greater than the specified minimum date
 function getPostsByMinDate(minDate) {
     return new Promise((resolve, reject) => {
-        reject();
+        Post.findAll({
+            where: {
+                postDate: {
+                    [gte]: new Date(minDateStr)
+                }
+            }
+        }).then((data) => {
+            resolve(data);
+        })
+        .catch(() => {
+            reject("No results returned");
+        })
     });
 }
 
 // => Adds a new post
 function addPost(postData) {
     return new Promise((resolve, reject) => {
-        reject();
-    });
+        // Ensure published property is set correctly
+        postData.published = (postData.published) ? true : false;
+    
+        // Making sure that the empty values are null
+        for (const i in postData) {
+          if (postData[i] === '') {
+            postData[i] = null;
+          }
+        }
+    
+        // Setting the date
+        postData.postDate = new Date();
+    
+        // Create a new Post using the postData
+        Post.create(postData)
+          .then(() => {
+            resolve();
+          })
+          .catch((err) => {
+            reject('Unable to create post');
+          });
+      });
 }
 
 module.exports = { 
