@@ -3,7 +3,7 @@
  *  I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source
  *  (including 3rd party web sites) or distributed to other students.
  *
- *  Name: Aryan Khurana Student ID: 145282216 Date: 28 February 2023
+ *  Name: Aryan Khurana Student ID: 145282216 Date: 15 March 2023
  *
  *  Online (Cyclic) Link: https://zany-ox-sweatshirt.cyclic.app/about
  *
@@ -76,6 +76,12 @@ app.engine(
       safeHTML: function (context) {
         return stripJs(context);
       },
+      formatDate: function(dateObj){
+        let year = dateObj.getFullYear();
+        let month = (dateObj.getMonth() + 1).toString();
+        let day = dateObj.getDate().toString();
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2,'0')}`;
+    }    
     },
   })
 );

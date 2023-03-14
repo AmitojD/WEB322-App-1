@@ -1,3 +1,33 @@
+const Sequelize = require('sequelize');
+
+// set up sequelize to point to our postgres database
+var sequelize = new Sequelize('tgxufbkt', 'tgxufbkt', 'Jcv_k8x_AoNEzn36l-r6Q24T7Oy1nIud', {
+    host: 'babar.db.elephantsql.com',
+    dialect: 'postgres',
+    port: 5432,
+    dialectOptions: {
+        ssl: { rejectUnauthorized: false }
+    },
+    query: { raw: true }
+});
+
+// Defining the Post Model
+const Post = sequelize.define('Post', {
+    body: Sequelize.TEXT,
+    title: Sequelize.STRING,
+    postDate: Sequelize.DATE,
+    featureImage: Sequelize.STRING,
+    published: Sequelize.BOOLEAN
+});
+
+// Defining the Category Model
+const Category = sequelize.define('Category', {
+    category: sequelize.STRING
+});
+
+// This will ensure that our Post model gets a "category" column that will act as a foreign key to the Category model
+Post.belongsTo(Category, {foreignKey: 'category'});
+
 // => Read the posts.json and categories.json files and store the data in global arrays
 function initialize() {
     // Ensures that the categories file is read and assigned first before usage
