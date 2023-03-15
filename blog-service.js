@@ -178,6 +178,58 @@ function addPost(postData) {
       });
 }
 
+// => Adds a new category
+function addCategory(categoryData) {
+    return new Promise((resolve, reject) => {
+        for (let i in categoryData) {
+            if (categoryData[i] === "") {
+                categoryData[i] = null;
+            }
+        }
+        
+        Category.create(categoryData).then((category) => {
+            resolve(category);
+        })
+        .catch(() => {
+            reject("unable to create category");
+        });
+    })
+  }
+
+// => Deletes a category by id
+function deleteCategoryById(id) {
+    return new Promise((resolve, reject) => {
+        Category.destroy({
+            where: {
+              id: id,
+            },
+          })
+            .then(() => {
+              resolve("Destroyed");
+            })
+            .catch(() => {
+              reject("Unable to delete category");
+            });
+    })
+  }
+
+// => Deletes a post by id
+function deletePostById(id) {
+    return new Promise((resolve, reject) => {
+        Post.destroy({
+            where: {
+              id: id,
+            },
+          })
+            .then(() => {
+              resolve("Destroyed");
+            })
+            .catch(() => {
+              reject("Unable to delete post");
+            });
+    })
+  }
+
 module.exports = { 
     initialize, 
     getAllPosts, 
@@ -187,5 +239,8 @@ module.exports = {
     getPostById,
     getPostsByCategory,
     getPostsByMinDate,
-    getPublishedPostsByCategory
+    getPublishedPostsByCategory,
+    addCategory,
+    deleteCategoryById,
+    deletePostById
 };
