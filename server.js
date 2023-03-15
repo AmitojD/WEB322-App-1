@@ -24,7 +24,11 @@ const {
   getPostById,
   getPostsByCategory,
   getPostsByMinDate,
+  addCategory,
+  deleteCategoryById,
+  deletePostById
 } = require("./blog-service.js");
+const { resolve } = require("path");
 
 const app = express();
 
@@ -42,6 +46,9 @@ app.use(function (req, res, next) {
   app.locals.viewingCategory = req.query.category;
   next();
 });
+
+// Regular middleware
+app.use(express.urlencoded({extended: true}));
 
 // Register handlebars as the rendering engine for views
 app.engine(
@@ -190,7 +197,12 @@ app.get("/posts", (req, res) => {
 
 // ========== Add Post Page Route (GET) ==========
 app.get("/posts/add", (req, res) => {
-  res.render("addPost");
+  getCategories().then((categories) => {
+    res.render("addPost", {categories : categories});
+  })
+  .catch(() => {
+    res.render("addPost", {categories : []});
+  })
 });
 
 // ========== Add Post Page Route (POST) ==========
@@ -258,12 +270,51 @@ app.get("/post/:value", (req, res) => {
 app.get("/categories", (req, res) => {
   getCategories()
     .then((data) => {
-      (data.length > 0) ? res.render("posts", { posts: data }) : res.render("posts", { message: "No Results" }); 
+      (data.length > 0) ? res.render("categories", { categories: data }) : res.render("categories", { message: "No Results" }); 
     })
     // Error Handling
-    .catch((err) => {
+    .catch(() => {
       res.render("categories", { message: "no results" });
     });
+});
+
+// ========== Add Categories Route ==========
+app.get("/categories/add", (req, res) => {
+  res.render("addCategory");
+});
+
+// ========== Add Categories Post Route ==========
+app.post("/categories/add", (req, res) => {
+  console.log(req.body.category);
+  if (req.body.category != "") {
+    addCategory(req.body.category).then(() => {
+      console.log("Fdasadsffadfdafdas");
+      resolve();
+    })
+    .catch(() => {
+      reject("Some error occured");
+    })
+  }
+});
+
+// ========== Delete Categories Route ==========
+app.get("/categories/delete/:id", (req, res) => {
+  deleteCategoryById(req.params.id).then(() => {
+    resolve();
+  })
+  .catch(() => {
+    reject("Unable to remove category / Category not found");
+  })
+});
+
+// ========== Delete Posts Route ==========
+app.get("/posts/delete/:id", (req, res) => {
+  deletePostById(req.params.id).then(() => {
+    resolve();
+  })
+  .catch(() => {
+    reject("Unable to remove category / Category not found");
+  })
 });
 
 // ========== Blog By ID Page Route ==========
