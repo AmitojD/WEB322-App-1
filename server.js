@@ -155,7 +155,7 @@ app.get("/posts", (req, res) => {
   if (req.query.category) {
     getPostsByCategory(req.query.category)
       .then((data) => {
-        res.render("posts", { posts: data });
+        (data.length > 0) ? res.render("posts", { posts: data }) : res.render("posts", { message: "No Results" }); 
       })
       // Error Handling
       .catch((err) => {
@@ -167,7 +167,7 @@ app.get("/posts", (req, res) => {
   else if (req.query.minDate) {
     getPostsByMinDate(req.query.minDate)
       .then((data) => {
-        res.render("posts", { posts: data });
+        (data.length > 0) ? res.render("posts", { posts: data }) : res.render("posts", { message: "No Results" }); 
       })
       // Error Handling
       .catch((err) => {
@@ -179,7 +179,7 @@ app.get("/posts", (req, res) => {
   else {
     getAllPosts()
       .then((data) => {
-        res.render("posts", { posts: data });
+        (data.length > 0) ? res.render("posts", { posts: data }) : res.render("posts", { message: "No Results" }); 
       })
       // Error Handling
       .catch((err) => {
@@ -258,7 +258,7 @@ app.get("/post/:value", (req, res) => {
 app.get("/categories", (req, res) => {
   getCategories()
     .then((data) => {
-      res.render("categories", { categories: data });
+      (data.length > 0) ? res.render("posts", { posts: data }) : res.render("posts", { message: "No Results" }); 
     })
     // Error Handling
     .catch((err) => {
