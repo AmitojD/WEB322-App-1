@@ -153,7 +153,11 @@ app.get("/blog", async (req, res) => {
   }
 
   // render the "blog" view with all of the data (viewData)
-  res.render("blog", { data: viewData });
+  if (viewData.posts.length > 0) {
+    res.render("blog", { data: viewData });
+  } else {
+    res.render("blog", {data: viewData, message: "Please try another post / category"})
+  }
 });
 
 // ========== Posts Page Route ==========
@@ -244,9 +248,10 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
       // Adding the post if everything is okay
       // Only add the post if the entries make sense
       if (postObject.title) {
-        addPost(postObject);
+        addPost(postObject).then(() => {
+          res.redirect("/posts");
+        });
       }
-      res.redirect("/posts");
     })
     // Error Handling
     .catch((err) => {
@@ -285,14 +290,16 @@ app.get("/categories/add", (req, res) => {
 
 // ========== Add Categories Post Route ==========
 app.post("/categories/add", (req, res) => {
+  let catObject = {};
+  // Add it Category before redirecting to /categories
+  catObject.category = req.body.category;
   console.log(req.body.category);
   if (req.body.category != "") {
-    addCategory(req.body.category).then(() => {
-      console.log("Fdasadsffadfdafdas");
-      resolve();
+    addCategory(catObject).then(() => {
+      res.redirect("/categories");
     })
     .catch(() => {
-      reject("Some error occured");
+      console.log("Some error occured");
     })
   }
 });
@@ -300,20 +307,20 @@ app.post("/categories/add", (req, res) => {
 // ========== Delete Categories Route ==========
 app.get("/categories/delete/:id", (req, res) => {
   deleteCategoryById(req.params.id).then(() => {
-    resolve();
+    res.redirect("/categories");
   })
   .catch(() => {
-    reject("Unable to remove category / Category not found");
+    console.log("Unable to remove category / Category not found");
   })
 });
 
 // ========== Delete Posts Route ==========
 app.get("/posts/delete/:id", (req, res) => {
   deletePostById(req.params.id).then(() => {
-    resolve();
+    res.redirect("/posts");
   })
   .catch(() => {
-    reject("Unable to remove category / Category not found");
+    console.log("Unable to remove category / Category not found");
   })
 });
 
