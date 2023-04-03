@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 // Creating a schema for our database
@@ -44,16 +45,24 @@ function registerUser(userData) {
         if (userData.password !== userData.password2) {
             reject("Passwords do not match");
         } else {
-            let newUser = new User(userData);
-            newUser.save().then(() => {
-                resolve();
-            }).catch((err) => {
-                if (err.code === 11000) {
-                    reject("User Name already taken");
-                } else {
-                    reject(`There was an error creating the user: ${err}`);
-                }
+            bcrypt.hash(userData.password, 10).then((hash) => {
+                userData.password = hash;
+                let newUser = new User(userData);
+                newUser.save().then(() => {
+                    resolve();
+                }).catch((err) => {
+                    if (err.code === 11000) {
+                        reject("User Name already taken");
+                    } else {
+                        reject(`There was an error creating the user: ${err}`);
+                    }
+                })
             })
+            .catch((err) => {
+                console.log(err);
+                reject("There was an error encrypting the password")
+            });
+        
         }
     })
 }
@@ -65,9 +74,14 @@ function checkUser(userData) {
         .then((users) => {
             if (users.length === 0) {
                 reject(`Unable to find user: ${userData.userName}`);
-            } else if (userData.password !== users[0].password) {
-                reject(`Incorrect Password for user: ${userData.userName}`);
             } else {
+                bcrypt.compare(userData.password, users[0].password).then((result) => {
+                    if (result === true) {
+                        resolve(users[0]);
+                    } else {
+                        reject(`Incorrect Password for user: ${userData.userName}`);
+                    }
+                 });
                 users[0].loginHistory.push(
                     {
                         "dateTime": new Date().toString(),

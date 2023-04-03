@@ -57,7 +57,6 @@ app.use(function(req, res, next) {
 // A more advanced version of this would include checks for authorization as well after
 // checking if the user is authenticated
 function ensureLogin(req, res, next) {
-  console.log(req.session.user);
   if (!req.session.user) {
     res.redirect("/login");
   } else {
