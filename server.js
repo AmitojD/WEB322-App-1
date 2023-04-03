@@ -424,6 +424,7 @@ app.post("/login", (req, res) => {
   req.body.userAgent = req.get('User-Agent');
   authData.checkUser(req.body)
     .then((user) => {
+      // Storing the credentials in our session
       req.session.user = {
         userName: user.userName,
         email: user.email,
@@ -432,6 +433,7 @@ app.post("/login", (req, res) => {
       res.redirect('/posts');
     })
     .catch((err) => {
+      console.log("llll");
       res.render('login', {
         errorMessage: err,
         userName: req.body.userName

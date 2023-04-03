@@ -60,31 +60,33 @@ function registerUser(userData) {
 
 // => Checks if the user's login credentials are right
 function checkUser(userData) {
-    User.find({ "userName": userData.userName }).exec()
-    .then((users) => {
-        if (users.length === 0) {
+    return new Promise((resolve, reject) => {
+        User.find({ "userName": userData.userName }).exec()
+        .then((users) => {
+            if (users.length === 0) {
+                reject(`Unable to find user: ${userData.userName}`);
+            } else if (userData.password !== users[0].password) {
+                reject(`Incorrect Password for user: ${userData.userName}`);
+            } else {
+                users[0].loginHistory.push(
+                    {
+                        "dateTime": new Date().toString(),
+                        "userAgent": userData.userAgent
+                    }
+                )
+                User.updateOne(
+                    {"userName": users[0].userName},
+                    {"$set": {"loginHistory": users[0].loginHistory}}
+                ).exec().then(() => {
+                    resolve(userData);
+                }).catch((err) => {
+                    reject(`There was an error verifying the user: ${err}`)
+                })
+            }
+        }).catch(() => {
             reject(`Unable to find user: ${userData.userName}`);
-        } else if (userData.password !== users[0].password) {
-            reject(`Incorrect Password for user: ${userData.userName}`);
-        } else {
-            users[0].loginHistory.push(
-                {
-                    "dateTime": new Date().toString(),
-                    "userAgent": userData.userAgent
-                }
-            )
-            User.updateOne(
-                {"userName": users[0].userName},
-                {"$set": {"loginHistory": users[0].loginHistory}}
-            ).exec().then(() => {
-                resolve();
-            }).catch((err) => {
-                reject(`There was an error verifying the user: ${err}`)
-            })
-        }
-    }).catch(() => {
-        reject(`Unable to find user: ${userData.userName}`);
-    });
+        });
+    })
 }
 
 // Exporting the functions
