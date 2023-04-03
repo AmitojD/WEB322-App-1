@@ -57,6 +57,7 @@ app.use(function(req, res, next) {
 // A more advanced version of this would include checks for authorization as well after
 // checking if the user is authenticated
 function ensureLogin(req, res, next) {
+  console.log(req.session.user);
   if (!req.session.user) {
     res.redirect("/login");
   } else {
@@ -195,7 +196,6 @@ app.get("/blog", async (req, res) => {
 // ========== Posts Page Route ==========
 app.get("/posts", ensureLogin, (req, res) => {
   // Checking if a category was provided
-  console.log(req.query.category);
   if (req.query.category) {
     getPublishedPostsByCategory(req.query.category)
       .then((data) => {
@@ -335,7 +335,6 @@ app.post("/categories/add", ensureLogin, (req, res) => {
   let catObject = {};
   // Add it Category before redirecting to /categories
   catObject.category = req.body.category;
-  console.log(req.body.category);
   if (req.body.category != "") {
     addCategory(catObject)
       .then(() => {
@@ -424,7 +423,6 @@ app.post("/login", (req, res) => {
   req.body.userAgent = req.get('User-Agent');
   authData.checkUser(req.body)
     .then((user) => {
-      // Storing the credentials in our session
       req.session.user = {
         userName: user.userName,
         email: user.email,
@@ -433,11 +431,7 @@ app.post("/login", (req, res) => {
       res.redirect('/posts');
     })
     .catch((err) => {
-      console.log("llll");
-      res.render('login', {
-        errorMessage: err,
-        userName: req.body.userName
-      });
+      res.render('login', {errorMessage: err, userName: req.body.userName});
     });
 })
 

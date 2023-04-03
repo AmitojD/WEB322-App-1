@@ -75,10 +75,11 @@ function checkUser(userData) {
                     }
                 )
                 User.updateOne(
-                    {"userName": users[0].userName},
-                    {"$set": {"loginHistory": users[0].loginHistory}}
+                    { "userName": users[0].userName },
+                    { "$set": {"loginHistory": users[0].loginHistory} },
+                    { "multi": false }
                 ).exec().then(() => {
-                    resolve(userData);
+                    resolve(users[0]);
                 }).catch((err) => {
                     reject(`There was an error verifying the user: ${err}`)
                 })
