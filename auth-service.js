@@ -45,8 +45,10 @@ function registerUser(userData) {
         if (userData.password !== userData.password2) {
             reject("Passwords do not match");
         } else {
+            // Hashing the password before storing it
             bcrypt.hash(userData.password, 10).then((hash) => {
                 userData.password = hash;
+                // Saving the user data
                 let newUser = new User(userData);
                 newUser.save().then(() => {
                     resolve();
@@ -75,6 +77,7 @@ function checkUser(userData) {
             if (users.length === 0) {
                 reject(`Unable to find user: ${userData.userName}`);
             } else {
+                // Checking if the passwords match
                 bcrypt.compare(userData.password, users[0].password).then((result) => {
                     if (result === true) {
                         resolve(users[0]);
@@ -82,12 +85,12 @@ function checkUser(userData) {
                         reject(`Incorrect Password for user: ${userData.userName}`);
                     }
                  });
-                users[0].loginHistory.push(
-                    {
-                        "dateTime": new Date().toString(),
-                        "userAgent": userData.userAgent
-                    }
-                )
+                 // Updating the login history if everything passes validation
+                users[0].loginHistory.push({
+                    "dateTime": new Date().toString(),
+                    "userAgent": userData.userAgent
+                })
+                // Updating the user database
                 User.updateOne(
                     { "userName": users[0].userName },
                     { "$set": {"loginHistory": users[0].loginHistory} },
