@@ -31,6 +31,7 @@ const {
   deletePostById,
 } = require("./blog-service.js");
 const { resolve } = require("path");
+const { redirect } = require("express/lib/response.js");
 
 const app = express();
 
@@ -453,6 +454,11 @@ app.post("/register", (req, res) => {
 app.get("/logout", (req, res) => {
   req.session.reset();
   res.redirect("/");
+})
+
+// ========== User History Route ==========
+app.get("/userHistory", ensureLogin, (req, res) => {
+  res.render("userHistory");
 })
 
 // ========== HANDLE 404 REQUESTS ==========
