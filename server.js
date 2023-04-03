@@ -249,7 +249,7 @@ app.get("/posts/add", ensureLogin, (req, res) => {
 });
 
 // ========== Add Post Page Route (POST) ==========
-app.post("/posts/add", upload.single("featureImage"), (req, res) => {
+app.post("/posts/add", ensureLogin, upload.single("featureImage"), (req, res) => {
   // Configuring cloudinary image uploading
   let streamUpload = (req) => {
     return new Promise((resolve, reject) => {
@@ -299,7 +299,7 @@ app.post("/posts/add", upload.single("featureImage"), (req, res) => {
 });
 
 // ========== Find a post by ID Route ==========
-app.get("/post/:value", ensureLogin, (req, res) => {
+app.get("/post/:value", (req, res) => {
   getPostById(req.params.value)
     .then((data) => {
       res.send(data);
