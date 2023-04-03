@@ -408,6 +408,53 @@ app.get("/blog/:id", ensureLogin, async (req, res) => {
   res.render("blog", { data: viewData });
 });
 
+// ========== Get Login Page Route ==========
+app.get("/login", (req, res) => {
+  res.render("login");
+})
+
+// ========== Get Register Page Route ==========
+app.get("/register", (req, res) => {
+  res.render("register");
+})
+
+// ========== Post Login Page Route ==========
+app.post("/login", (req, res) => {
+  req.body.userAgent = req.get('User-Agent');
+  authData.checkUser(req.body)
+    .then((user) => {
+      req.session.user = {
+        userName: user.userName,
+        email: user.email,
+        loginHistory: user.loginHistory
+      };
+      res.redirect('/posts');
+    })
+    .catch((err) => {
+      res.render('login', {
+        errorMessage: err,
+        userName: req.body.userName
+      });
+    });
+})
+
+// ========== Post Register Page Route ==========
+app.post("/register", (req, res) => {
+   authData.registerUser(req.body)
+   .then(() => {
+     res.render('register', { successMessage: 'User created' });
+   })
+   .catch((err) => {
+     res.render('register', { errorMessage: err, userName: req.body.userName });
+   });
+})
+
+// ========== Logout Route ==========
+app.get("/logout", (req, res) => {
+  req.session.reset();
+  res.redirect("/");
+})
+
 // ========== HANDLE 404 REQUESTS ==========
 app.use((req, res) => {
   res.status(404).render("404");
